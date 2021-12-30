@@ -7,6 +7,8 @@ import Eduardo from '../views/Eduardo.vue'
 import JoaoPedro from '../views/JoaoPedro.vue'
 import Iruan from '../views/Iruan.vue'
 
+
+
 Vue.use(VueRouter)
 
 const routes = [

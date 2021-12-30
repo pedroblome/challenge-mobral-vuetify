@@ -7,6 +7,8 @@
       color="#00695C"
       v-model="drawer"
       app
+      mini-variant-width="100"
+      permanent
     >
       <v-list-item>
         <v-list-item-content>
@@ -38,7 +40,7 @@
     </v-navigation-drawer>
 
     <!-- HOME DA PÁGINA -->
-    <v-main class="ma-auto">
+    <v-main class="mx-auto">
       <router-view></router-view>
     </v-main>
 
