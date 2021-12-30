@@ -128,7 +128,7 @@ export default {
       (v) => !!v || "Tick is required",
       (v) => v.length >= 3 || "Tick must have at least three digits.",
     ],
-    token: "5159e599-7d8f-4f0c-81d2-1b22948f733e",
+    token: "7842fdcd-42fb-441f-9d07-b21f2c1d23db",
     tickName: "",
     chkprediction: "",
     chksentiment: "",
@@ -149,6 +149,8 @@ export default {
     bearishSentiment: "",
     twitsBearishSentiment: "",
     overallSocialRating: "",
+    // ALL TICKS BOOLEAN
+    allTicksBoolean: true,
   }),
   methods: {
     autoTransform() {
@@ -181,6 +183,25 @@ export default {
       this.aiprediction = false;
     },
 
+    async verifyTick() {
+      const responseTick = await axios.get(
+        "https://www.styvio.com/completeTickerList/"
+      );
+      if (responseTick.status !== 200) {
+        this.showMessageBoxError("Error on get ticks on server.");
+      }
+
+      if (!responseTick.data.tickerList.includes(this.tickName)) {
+        this.showMessageBoxError(
+          this.tickName + " does not exist on Styvio database"
+        );
+        this.allTicksBoolean = false;
+      } else {
+        this.allTicksBoolean = true; // EXISTE
+      }
+      console.log(this.allTicksBoolean);
+    },
+
     async searchTick() {
       if (this.chkprediction !== "1" && this.chksentiment !== "1") {
         this.showMessageBoxError(
@@ -191,64 +212,71 @@ export default {
       }
 
       let urlPrediction = `https://www.styvio.com/apiV2/ai/${this.tickName}/${this.token}`;
+      // https://www.styvio.com/apiV2/AAPL/75622d27-0180-4123-a7ea-4dfc5270522a
       let urlSentiment = `https://www.styvio.com/apiV2/sentiment/${this.tickName}/${this.token}`;
       this.resetData();
-      if (this.chkprediction === "1") {
-        try {
-          const response = await axios.get(urlPrediction);
-          console.log(response.status);
-          if (response.status === 200) {
-            this.tickNameAPI = response.data.ticker;
-            this.fullCompanyName = response.data.name;
-            this.direction = response.data.predictionData.direction;
-            this.action = response.data.predictionData.action;
-            this.currentPrice = response.data.predictionData.currentPrice;
-            this.aiprediction = true;
-            this.resultsShow = true; // Show div results
-          } else {
-            this.showMessageBoxError(
-              "An error has ocurred in get data from Styvio API."
-            );
-          }
-        } catch (e) {
-          this.showMessageBoxError(
-            "An error has ocurred in get data from Styvio API. Check your connection and try again"
-          );
-        }
-      }
-      if (this.chksentiment === "1") {
-        try {
-          const response = await axios.get(urlSentiment);
+      await this.verifyTick();
 
-          if (response.status === 200) {
-            this.tickNameAPI = response.data.ticker;
-            this.fullCompanyName = response.data.companyInformation.name;
-            this.twitsBullishSentiment = this.formatTwoDecimal(
-              response.data.stockTwitsSentiment.percentBullish
-            );
-            this.twitsBearishSentiment = this.formatTwoDecimal(
-              response.data.stockTwitsSentiment.percentBearish
-            );
-            // OVERALL => RESUMO
-            this.bearishSentiment = this.formatTwoDecimal(
-              response.data.overallSentiment.totalBearishSentiment
-            );
-            this.bullishSentiment = this.formatTwoDecimal(
-              response.data.overallSentiment.totalBullishSentiment
-            );
-            this.overallSocialRating =
-              response.data.overallSentiment.overallSocialRating;
-            this.sentimentshow = true;
-            this.resultsShow = true; // Show div results
-          } else {
+      if (this.allTicksBoolean) {
+        if (this.chkprediction === "1") {
+          try {
+            console.log(urlPrediction);
+            const response = await axios.get(urlPrediction);
+            console.log(response);
+            if (response.status === 200) {
+              this.tickNameAPI = response.data.ticker;
+              this.fullCompanyName = response.data.name;
+              this.direction = response.data.predictionData.direction;
+              this.action = response.data.predictionData.action;
+              this.currentPrice = response.data.predictionData.currentPrice;
+              this.aiprediction = true;
+              this.resultsShow = true; // Show div results
+            } else {
+              this.showMessageBoxError(
+                "An error has ocurred in get data from Styvio API."
+              );
+            }
+          } catch (e) {
             this.showMessageBoxError(
-              "An error has ocurred in get data from Styvio API."
+              "An error has ocurred in get data from Styvio API. Check your connection and try again"
             );
           }
-        } catch (e) {
-          this.showMessageBoxError(
-            "An error has ocurred in get data from Styvio API. Check your connection and try again"
-          );
+        }
+
+        if (this.chksentiment === "1") {
+          try {
+            const response = await axios.get(urlSentiment);
+
+            if (response.status === 200) {
+              this.tickNameAPI = response.data.ticker;
+              this.fullCompanyName = response.data.companyInformation.name;
+              this.twitsBullishSentiment = this.formatTwoDecimal(
+                response.data.stockTwitsSentiment.percentBullish
+              );
+              this.twitsBearishSentiment = this.formatTwoDecimal(
+                response.data.stockTwitsSentiment.percentBearish
+              );
+              // OVERALL => RESUMO
+              this.bearishSentiment = this.formatTwoDecimal(
+                response.data.overallSentiment.totalBearishSentiment
+              );
+              this.bullishSentiment = this.formatTwoDecimal(
+                response.data.overallSentiment.totalBullishSentiment
+              );
+              this.overallSocialRating =
+                response.data.overallSentiment.overallSocialRating;
+              this.sentimentshow = true;
+              this.resultsShow = true; // Show div results
+            } else {
+              this.showMessageBoxError(
+                "An error has ocurred in get data from Styvio API."
+              );
+            }
+          } catch (e) {
+            this.showMessageBoxError(
+              "An error has ocurred in get data from Styvio API. Check your connection and try again"
+            );
+          }
         }
       }
     },

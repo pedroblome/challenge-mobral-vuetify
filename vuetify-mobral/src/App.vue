@@ -73,6 +73,7 @@ export default {
   data: () => ({
     integrantes: [
       { name: "Igor", path: "/igor" },
+      { name: "Igor News", path: "/igornews" },
       { name: "Dieni", path: "/dieni" },
       { name: "Eduardo", path: "/eduardo" },
       { name: "João Pedro", path: "/joaopedro" },
