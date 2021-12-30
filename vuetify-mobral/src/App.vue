@@ -6,7 +6,7 @@
       dark
       color="#00695C"
       v-model="drawer"
-      app
+      app mini-variant="true"
       mini-variant-width="100"
       permanent
     >
