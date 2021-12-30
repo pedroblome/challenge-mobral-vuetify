@@ -4,6 +4,8 @@ import vuetify from './plugins/vuetify'
 import router from './router'
 import VueTheMask from 'vue-the-mask'
 Vue.use(VueTheMask)
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 
 Vue.config.productionTip = false
 

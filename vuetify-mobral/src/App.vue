@@ -6,7 +6,8 @@
       dark
       color="#00695C"
       v-model="drawer"
-      app mini-variant="true"
+      app
+      mini-variant="true"
       mini-variant-width="100"
       permanent
     >
@@ -46,23 +47,24 @@
 
     <!-- FOOTER -->
     <v-footer color="#4DB6AC" padless>
-      <v-row justify="center" no-gutters>
-        <v-btn
-          v-for="(i, index) in integrantes"
-          :key="index"
-          color="white"
-          text
-          rounded
-          class="my-2"
-          :to="i.path"
-        >
-          {{ i.name }}
-        </v-btn>
-        <v-col class="#4DB6AC py-4 text-center white--text" cols="12">
-          <h2>Mobral 2021</h2>
-        </v-col>
-      </v-row>
-    </v-footer>
+       <v-col class="#4DB6AC py-4 text-center white--text" cols="12">
+         <v-btn
+            v-for="(i, index) in integrantes"
+            :key="index"
+            color="white"
+            text
+            rounded
+            class="my-2"
+            :to="i.path"
+          >
+            {{ i.name }}
+          </v-btn>
+         </v-col>
+       
+          <v-col class="#4DB6AC py-4 text-center white--text" cols="12">
+            <h2>Mobral 2021</h2>
+          </v-col>
+      </v-footer>
   </v-app>
 </template>
 
