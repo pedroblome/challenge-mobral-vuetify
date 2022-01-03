@@ -1,122 +1,126 @@
 <template>
-  <v-card width="900" elevation="11">
-    <v-card-title class="justify-center">
-      <img width="100" heigth="50" src="../assets/styvioLogo.png" />
-      <h1 display="1" class="styvioTitle">Styvio</h1>
-    </v-card-title>
+  <v-container class="d-flex flex-column align-center justify-content">
+    <v-card width="900" elevation="11">
+      <v-card-title class="justify-center">
+        <img width="100" heigth="50" src="../assets/styvioLogo.png" />
+        <h1 display="1" class="styvioTitle">Styvio</h1>
+      </v-card-title>
 
-    <v-divider inset></v-divider>
+      <v-divider inset></v-divider>
 
-    <v-card-text>
-      <v-form>
-        <v-text-field
-          label="Tick name (TSLA)"
-          :rules="tickRules"
-          hide-details="auto"
-          v-model="tickName"
-          v-mask="['SSSSX']"
-          @keyup="autoTransform"
-          prepend-icon="mdi-trending-up"
-        ></v-text-field>
-        <v-row class="ml-15">
-          <v-col>
-            <v-checkbox
-              v-model="chkprediction"
-              label="AI Prediction"
-              color="#4DB6AC"
-              value="1"
-              hide-details
-            ></v-checkbox>
-          </v-col>
+      <v-card-text>
+        <v-form>
+          <v-text-field
+            label="Tick name (TSLA)"
+            :rules="tickRules"
+            hide-details="auto"
+            v-model="tickName"
+            v-mask="['SSSSX']"
+            @keyup="autoTransform"
+            prepend-icon="mdi-trending-up"
+          ></v-text-field>
+          <v-row class="ml-15">
+            <v-col>
+              <v-checkbox
+                v-model="chkprediction"
+                label="AI Prediction"
+                color="#4DB6AC"
+                value="1"
+                hide-details
+              ></v-checkbox>
+            </v-col>
 
-          <v-col>
-            <v-checkbox
-              v-model="chksentiment"
-              label="Sentiment"
-              color="#4DB6AC"
-              value="1"
-              hide-details
-            ></v-checkbox>
-          </v-col>
-        </v-row>
-      </v-form>
+            <v-col>
+              <v-checkbox
+                v-model="chksentiment"
+                label="Sentiment"
+                color="#4DB6AC"
+                value="1"
+                hide-details
+              ></v-checkbox>
+            </v-col>
+          </v-row>
+        </v-form>
 
-      <v-container class="d-flex justify-center">
-        <v-btn
-          @click="searchTick"
-          elevation="4"
-          class="mt-7 mx-auto"
-          width="200"
-          raised
-          rounded
-          >Search for {{ tickName }}</v-btn
+        <v-container class="d-flex justify-center">
+          <v-btn
+            @click="searchTick"
+            elevation="4"
+            class="mt-7 mx-auto"
+            width="200"
+            raised
+            rounded
+            >Search for {{ tickName }}</v-btn
+          >
+        </v-container>
+        <v-alert v-if="alertChkBox" shaped prominent type="error">{{
+          msgBox
+        }}</v-alert>
+      </v-card-text>
+      <v-divider inset></v-divider>
+
+      <!-- RESULTADOS DA BUSCA -->
+      <div v-if="resultsShow" class="results">
+        <h1 class="mx-5 ma-5">
+          Results of {{ fullCompanyName }} ({{ tickNameAPI }})
+        </h1>
+
+        <v-container
+          class="mb-5 d-flex flex-column justify-center align-center"
         >
-      </v-container>
-      <v-alert v-if="alertChkBox" shaped prominent type="error">{{
-        msgBox
-      }}</v-alert>
-    </v-card-text>
-    <v-divider inset></v-divider>
+          <!-- CARD DE AI PREDICTION -->
+          <v-card
+            class="mb-5"
+            width="600"
+            elevation="7"
+            shaped
+            dark
+            color="#4DB6AC"
+            v-show="aiprediction"
+          >
+            <v-card-title>
+              <h2>Prediction of {{ tickNameAPI }}</h2>
+            </v-card-title>
 
-    <!-- RESULTADOS DA BUSCA -->
-    <div v-if="resultsShow" class="results">
-      <h1 class="mx-5 ma-5">
-        Results of {{ fullCompanyName }} ({{ tickNameAPI }})
-      </h1>
+            <v-card-text>
+              <h3 class="pb-5">Direction : {{ direction }}</h3>
+              <h3 class="pb-5">Action : {{ action }}</h3>
+              <h3 class="pb-5">Current price : {{ currentPrice }}</h3>
+            </v-card-text>
+          </v-card>
 
-      <v-container class="mb-5 d-flex flex-column justify-center align-center">
-        <!-- CARD DE AI PREDICTION -->
-        <v-card
-          class="mb-5"
-          width="600"
-          elevation="7"
-          shaped
-          dark
-          color="#4DB6AC"
-          v-show="aiprediction"
-        >
-          <v-card-title>
-            <h2>Prediction of {{ tickNameAPI }}</h2>
-          </v-card-title>
+          <!-- CARD DE SENTIMENT -->
+          <v-card
+            v-show="sentimentshow"
+            width="600"
+            elevation="7"
+            shaped
+            dark
+            color="#4DB6AC"
+          >
+            <v-card-title>
+              <h2>Overall Sentiment of {{ tickNameAPI }}</h2>
+            </v-card-title>
 
-          <v-card-text>
-            <h3 class="pb-5">Direction : {{ direction }}</h3>
-            <h3 class="pb-5">Action : {{ action }}</h3>
-            <h3 class="pb-5">Current price : {{ currentPrice }}</h3>
-          </v-card-text>
-        </v-card>
-
-        <!-- CARD DE SENTIMENT -->
-        <v-card
-          v-show="sentimentshow"
-          width="600"
-          elevation="7"
-          shaped
-          dark
-          color="#4DB6AC"
-        >
-          <v-card-title>
-            <h2>Overall Sentiment of {{ tickNameAPI }}</h2>
-          </v-card-title>
-
-          <v-card-text>
-            <h3 class="pb-5">
-              StockTwits Bearish sentiment : {{ twitsBearishSentiment }}%
-            </h3>
-            <h3 class="pb-5">
-              Overall Bullish sentiment : {{ bullishSentiment }} %
-            </h3>
-            <h3 class="pb-5">
-              Overall Bearish sentiment : {{ bearishSentiment }} %
-            </h3>
-            <h3 class="pb-5">
-              Overall Social Rating : {{ overallSocialRating }}
-            </h3>
-          </v-card-text>
-        </v-card>
-      </v-container>
-    </div>
-  </v-card>
+            <v-card-text>
+              <h3 class="pb-5">
+                StockTwits Bearish sentiment : {{ twitsBearishSentiment }}%
+              </h3>
+              <h3 class="pb-5">
+                Overall Bullish sentiment : {{ bullishSentiment }} %
+              </h3>
+              <h3 class="pb-5">
+                Overall Bearish sentiment : {{ bearishSentiment }} %
+              </h3>
+              <h3 class="pb-5">
+                Overall Social Rating : {{ overallSocialRating }}
+              </h3>
+            </v-card-text>
+          </v-card>
+        </v-container>
+      </div>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
