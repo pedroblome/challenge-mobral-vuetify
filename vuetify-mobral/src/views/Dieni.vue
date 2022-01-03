@@ -16,9 +16,7 @@
                 </v-text-field>
               </v-form>
               <div v-if="results">
-                <!-- <div v-for="(result, index) in results" :key="index">
-                  <img v-bind:src="result.links[0].href" />
-                </div> -->
+                
               </div>
             </v-card-text>
           </v-card>
@@ -39,7 +37,7 @@
 </template>
 
 <script>
-//import axios from 'axios';
+
 export default {
   data: () => ({
     inputNasa: "",
@@ -50,14 +48,7 @@ export default {
   methods: {
     async buscarNasa() {
       console.log ("https://images-api.nasa.gov/search?q=" + this.inputNasa)
-      /*await axios.get('https://images-api.nasa.gov/search?q=' + this.inputNasa).then(response => {
-        this.results = response.data.results;
-        console.log(this.results)
-        console.log(response)
-      })
-      const response = await axios.get('https://images-api.nasa.gov/search?q=' + this.inputNasa)
-        this.results = response.data.results;
-        console.log(this.results)*/
+      
         const result = await fetch (`https://images-api.nasa.gov/search?q=${this.inputNasa}`);
         const json = await result.json();
         this.results = json.collection.items;
