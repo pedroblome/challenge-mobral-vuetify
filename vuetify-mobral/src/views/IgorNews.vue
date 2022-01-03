@@ -2,7 +2,7 @@
   <v-container class="d-flex flex-column align-center justify-content">
     <v-card
       dark
-      height="450"
+      height="500"
       color="#4DB6AC"
       class="mt-10"
       width="900"
@@ -34,9 +34,7 @@
             <v-radio label="Whatever  " value="all"></v-radio>
           </v-radio-group>
         </v-container>
-      </v-card-text>
-      <v-container class="d-flex justify-center">
-        <v-card-actions>
+        <v-container class="d-flex justify-center">
           <v-btn
             @click="searchArticle"
             width="400"
@@ -45,10 +43,10 @@
             rounded
             >Search articles of {{ lblArticle }}</v-btn
           >
-        </v-card-actions>
-      </v-container>
+        </v-container>
+      </v-card-text>
 
-      <v-divider inset class="ma-auto" color="#00695C"></v-divider>
+      <v-divider inset color="red"></v-divider>
     </v-card>
     <v-alert
       border="left"
@@ -92,6 +90,7 @@ export default {
     lblArticle: "",
     selectedRadio: "",
     token: "d56ad51a12604551b3ccfd9facc885d8",
+    results: [],
     // ALERTS
     alertShow: false,
     alertMsg: "",
@@ -179,7 +178,10 @@ export default {
                 actual_article.author !== null
                   ? actual_article.author.replace("(Unknown)", "")
                   : "No specified",
-              title: actual_article.title,
+              title:
+                actual_article.title !== null
+                  ? actual_article.title
+                  : "No specified",
               link: actual_article.url,
               date: actual_article.publishedAt.split("T")[0],
             });
