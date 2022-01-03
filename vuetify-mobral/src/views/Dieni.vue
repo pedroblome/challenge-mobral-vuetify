@@ -1,8 +1,8 @@
 <template>
-  <div class="Search">
+ 
     <v-app>
-      <v-main class="bg">
-        <v-container>
+     
+      <v-container>
           <v-card width="500" class="ma-auto mt-14">
             <v-card-title>
               <h1>Busque imagens oficiais da nasa!</h1>
@@ -16,9 +16,9 @@
                 </v-text-field>
               </v-form>
               <div v-if="results">
-                <div v-for="(result, index) in results" :key="index">
+                <!-- <div v-for="(result, index) in results" :key="index">
                   <img v-bind:src="result.links[0].href" />
-                </div>
+                </div> -->
               </div>
             </v-card-text>
           </v-card>
@@ -28,20 +28,18 @@
             <v-card class="ma-5" width="300" v-for="(nasa,index) in results" :key="index">
               <v-card-title>{{ nasa.name }}</v-card-title>
               <v-card-text>
-                <v-img :src="nasa.image['url']"></v-img>
+                <v-img :src="nasa.links[0].href"></v-img>
                 
               </v-card-text>
             </v-card>
           </v-layout>
         </v-container>
-      </v-main>
-      
     </v-app>
-  </div>
+
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 export default {
   data: () => ({
     inputNasa: "",
@@ -51,25 +49,30 @@ export default {
   name: "",
   methods: {
     async buscarNasa() {
-      await axios.get('https://images-api.nasa.gov/search?q=' + this.inputNasa).then(response => {
+      console.log ("https://images-api.nasa.gov/search?q=" + this.inputNasa)
+      /*await axios.get('https://images-api.nasa.gov/search?q=' + this.inputNasa).then(response => {
         this.results = response.data.results;
         console.log(this.results)
+        console.log(response)
       })
+      const response = await axios.get('https://images-api.nasa.gov/search?q=' + this.inputNasa)
+        this.results = response.data.results;
+        console.log(this.results)*/
+        const result = await fetch (`https://images-api.nasa.gov/search?q=${this.inputNasa}`);
+        const json = await result.json();
+        this.results = json.collection.items;
+        console.log(this.results)
     }
   }
 }
 </script>
 
 <style scoped>
-.bg {
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: url("https://acegif.com/wp-content/gif/outerspace-26.gif");
-  background-size: cover;
-  background-color: black;
-  transform: scale(1.1);
-}
+
+#app{background:  url("https://acegif.com/wp-content/gif/outerspace-26.gif")
+    no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;}
 </style>

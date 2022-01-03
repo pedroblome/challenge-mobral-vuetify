@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <!-- NAVEGAÇÃO LATERAL  -->
+   <v-card> <!-- NAVEGAÇÃO LATERAL  -->
     <v-navigation-drawer
       expand-on-hover
       dark
@@ -64,7 +64,7 @@
           <v-col class="#4DB6AC py-4 text-center white--text" cols="12">
             <h2>Mobral 2021</h2>
           </v-col>
-      </v-footer>
+      </v-footer></v-card>
   </v-app>
 </template>
 
